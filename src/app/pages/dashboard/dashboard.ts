@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { AuthService, User } from '../../core/services/auth.service';
-import { TransferService, TransferPayload } from '../../core/services/transfer.service';
-import { SocketService, PaymentNotification } from '../../core/services/socket.service';
+import { AuthService, User } from '../../core/services/auth';
+import { TransferService, TransferPayload } from '../../core/services/transfer';
+import { SocketService, PaymentNotification } from '../../core/services/socket';
 
 @Component({
   selector: 'app-dashboard',
