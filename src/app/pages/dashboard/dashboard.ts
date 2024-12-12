@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -15,7 +15,7 @@ import { SocketService, PaymentNotification } from '../../core/services/socket';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  currentUser = this.authService.currentUser;
+  currentUser!: Signal<User | null>; // or Signal/WritableSignal type
   transactions = signal<any[]>([]);
   
   // Transfer Form State
@@ -38,7 +38,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private transferService: TransferService,
     private socketService: SocketService,
     private router: Router
-  ) {}
+  ) {
+ this.currentUser = this.authService.currentUser;
+
+  }
 
   ngOnInit(): void {
     const user = this.currentUser();
