@@ -24,25 +24,26 @@ export class LoginComponent {
   ) {}
 
   onLogin(): void {
-    if (!this.email || !this.password) {
-      this.errorMessage.set('Please enter both email and password.');
-      return;
-    }
-
-    this.isLoading.set(true);
-    this.errorMessage.set(null);
-
-    this.authService.login({ email: this.email, password: this.password }).subscribe({
-      next: (res) => {
-        this.isLoading.set(false);
-        if (res.success) {
-          this.router.navigate(['/dashboard']);
-        }
-      },
-      error: (err) => {
-        this.isLoading.set(false);
-        this.errorMessage.set(err.error?.error || 'Invalid credentials. Please try again.');
-      }
-    });
+  if (!this.email || !this.password) {
+    this.errorMessage.set('Please enter both email and password.');
+    return;
   }
+
+  this.isLoading.set(true);
+  this.errorMessage.set(null);
+
+  this.authService.login({ email: this.email, password: this.password }).subscribe({
+    next: () => {
+      this.isLoading.set(false);
+      
+      if (this.authService.isAuthenticated()) {
+        this.router.navigate(['/dashboard']);
+      }
+    },
+    error: (err) => {
+      this.isLoading.set(false);
+      this.errorMessage.set(err.error?.message || err.error?.error || 'Invalid credentials.');
+    }
+  });
+}
 }
