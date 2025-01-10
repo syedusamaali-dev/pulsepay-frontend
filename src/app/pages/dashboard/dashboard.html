@@ -1,144 +1,169 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 shadow-sm">
-  <a class="navbar-brand fw-bold text-primary" href="#">⚡ PulsePay</a>
-  <div class="ms-auto d-flex align-items-center gap-3">
-    <span class="text-light fs-6">Welcome, <strong>{{ currentUser()?.fullName }}</strong></span>
-    <button class="btn btn-outline-danger btn-sm" (click)="logout()">Logout</button>
+<!-- Modern Glass Navbar -->
+<nav class="navbar navbar-expand-lg modern-navbar sticky-top px-4 py-3">
+  <div class="container-fluid max-w-7xl">
+    <a class="navbar-brand d-flex align-items-center gap-2 text-white fw-bold fs-4" href="#">
+      <span class="p-2 rounded-3 bg-primary bg-gradient d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">⚡</span>
+      <span class="tracking-tight">PulsePay</span>
+    </a>
+    <div class="ms-auto d-flex align-items-center gap-3">
+      <div class="d-none d-sm-block text-end">
+        <div class="fs-6 fw-semibold text-white">{{ currentUser()?.fullName }}</div>
+        <div class="fs-7 text-secondary">{{ currentUser()?.email }}</div>
+      </div>
+      <button class="btn btn-outline-danger btn-sm rounded-pill px-3" (click)="logout()">Sign Out</button>
+    </div>
   </div>
 </nav>
 
 <div class="container py-4">
-  <!-- Live Payment Toast Notification -->
+  <!-- Live Payment Toast -->
   @if (liveToast()) {
-    <div class="toast show position-fixed bottom-0 end-0 m-3 p-2 bg-success text-white shadow-lg" style="z-index: 9999;">
-      <div class="toast-body d-flex align-items-center justify-content-between">
+    <div class="toast show position-fixed bottom-0 end-0 m-4 p-3 card-glass text-white border-success shadow-lg" style="z-index: 9999; max-width: 380px;">
+      <div class="d-flex align-items-start justify-content-between">
         <div>
-          🎉 <strong>Incoming Payment Received!</strong><br />
-          Received <strong>${{ liveToast()?.amount }}</strong> from {{ liveToast()?.senderName }}
+          <div class="fw-bold text-success mb-1">🎉 Payment Received!</div>
+          <div class="fs-6 fw-bold">${{ liveToast()?.amount }}</div>
+          <div class="small text-secondary">From {{ liveToast()?.senderName }}</div>
         </div>
-        <button type="button" class="btn-close btn-close-white ms-3" (click)="liveToast.set(null)"></button>
+        <button type="button" class="btn-close btn-close-white" (click)="liveToast.set(null)"></button>
       </div>
     </div>
   }
 
-  <!-- Account Balance Cards -->
+  <!-- Top Stat Cards -->
   <div class="row g-4 mb-4">
-    <div class="col-md-6">
-      <div class="card bg-primary text-white shadow-sm border-0 h-100">
-        <div class="card-body">
-          <h6 class="text-uppercase tracking-wide opacity-75">Available Balance</h6>
-          <h2 class="display-5 fw-bold my-2">${{ currentUser()?.balance | number:'1.2-2' }}</h2>
-          <p class="mb-0 fs-7">Account Number: <code>{{ currentUser()?.accountNumber }}</code></p>
+    <!-- Main Balance Card -->
+    <div class="col-lg-7">
+      <div class="card card-balance p-4 h-100 text-white">
+        <div class="d-flex justify-content-between align-items-start mb-4">
+          <div>
+            <span class="text-white-50 text-uppercase tracking-wider small fw-semibold">Total Available Balance</span>
+            <h1 class="display-4 fw-bold mt-1 mb-0">${{ currentUser()?.balance | number:'1.2-2' }}</h1>
+          </div>
+          <span class="badge bg-white bg-opacity-20 rounded-pill px-3 py-2 fw-normal">Active Account</span>
+        </div>
+        <div class="mt-auto pt-3 border-top border-white border-opacity-10 d-flex justify-content-between align-items-center">
+          <span class="small text-white-50">Account Number</span>
+          <code class="text-white fw-bold fs-6">{{ currentUser()?.accountNumber }}</code>
         </div>
       </div>
     </div>
 
-    <div class="col-md-6">
-      <div class="card bg-dark text-white shadow-sm border-0 h-100">
-        <div class="card-body d-flex flex-column justify-content-between">
+    <!-- Security & Status Card -->
+    <div class="col-lg-5">
+      <div class="card card-glass p-4 h-100">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div class="p-3 bg-success bg-opacity-10 text-success rounded-4 fs-3">🛡️</div>
           <div>
-            <h6 class="text-uppercase tracking-wide text-secondary">Security Status</h6>
-            <h4 class="fw-semibold text-success mt-2">🛡️ AI Fraud Shield Active</h4>
+            <h5 class="fw-bold mb-0">AI Fraud Shield</h5>
+            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-20">ACTIVE PROTECTION</span>
           </div>
-          <p class="text-secondary small mb-0">Automatic 2FA PIN Step-Up enforced on transfers over $5,000.</p>
+        </div>
+        <p class="text-secondary small mb-3">
+          Real-time transaction analysis in effect. Automatic 2FA Security PIN verification enforced on high-value transfers of $5,000+.
+        </p>
+        <div class="p-3 bg-dark bg-opacity-50 rounded-3 border border-secondary border-opacity-10 mt-auto">
+          <div class="d-flex justify-content-between small text-secondary">
+            <span>ACID Engine State:</span>
+            <span class="text-info fw-semibold">Session Transaction Ready</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="row g-4">
-    <!-- Quick Money Transfer Form -->
+    <!-- Transfer Form -->
     <div class="col-lg-5">
-      <div class="card shadow-sm border-0">
-        <div class="card-header bg-white py-3">
-          <h5 class="mb-0 fw-bold">💸 Send Money (ACID Transfer)</h5>
-        </div>
-        <div class="card-body">
-          @if (errorMessage()) {
-            <div class="alert alert-danger py-2 small">{{ errorMessage() }}</div>
+      <div class="card card-glass p-4">
+        <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+          <span>💸</span> Instant Money Transfer
+        </h5>
+
+        @if (errorMessage()) {
+          <div class="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-20 text-danger py-2 small rounded-3 mb-3">{{ errorMessage() }}</div>
+        }
+        @if (successMessage()) {
+          <div class="alert alert-success bg-success bg-opacity-10 border-success border-opacity-20 text-success py-2 small rounded-3 mb-3">{{ successMessage() }}</div>
+        }
+
+        <form (ngSubmit)="executeTransfer()">
+          <div class="mb-3">
+            <label class="form-label small text-secondary fw-semibold">Recipient Account</label>
+            <input type="text" class="form-control form-control-dark" [(ngModel)]="recipientAccountNumber" name="recipient" placeholder="ACC-XXXXXXXX" required />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small text-secondary fw-semibold">Amount ($)</label>
+            <input type="number" class="form-control form-control-dark" [(ngModel)]="amount" (ngModelChange)="checkFraudShieldTrigger()" name="amount" placeholder="0.00" required />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small text-secondary fw-semibold">Note / Description</label>
+            <input type="text" class="form-control form-control-dark" [(ngModel)]="description" name="description" placeholder="What is this transfer for?" />
+          </div>
+
+          @if (showPinField()) {
+            <div class="mb-3 p-3 bg-warning bg-opacity-10 border border-warning border-opacity-20 rounded-3">
+              <label class="form-label small fw-bold text-warning mb-1">⚠️ Fraud Shield Security PIN Required</label>
+              <input type="password" class="form-control form-control-dark mt-2" [(ngModel)]="pin" name="pin" placeholder="Enter 4-digit PIN" maxlength="6" />
+              <div class="text-secondary fs-7 mt-1">Transfers $5,000+ require step-up authentication.</div>
+            </div>
           }
-          @if (successMessage()) {
-            <div class="alert alert-success py-2 small">{{ successMessage() }}</div>
-          }
 
-          <form (ngSubmit)="executeTransfer()">
-            <div class="mb-3">
-              <label class="form-label small fw-semibold">Recipient Account Number</label>
-              <input type="text" class="form-control" [(ngModel)]="recipientAccountNumber" name="recipient" placeholder="ACC-XXXXXXXX" required />
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label small fw-semibold">Amount ($)</label>
-              <input type="number" class="form-control" [(ngModel)]="amount" (ngModelChange)="checkFraudShieldTrigger()" name="amount" placeholder="100.00" required />
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label small fw-semibold">Description (Optional)</label>
-              <input type="text" class="form-control" [(ngModel)]="description" name="description" placeholder="Lunch payment" />
-            </div>
-
-            @if (showPinField()) {
-              <div class="mb-3 p-3 bg-light border border-warning rounded">
-                <label class="form-label small fw-bold text-dark">⚠️ Fraud Shield Triggered: Security PIN</label>
-                <input type="password" class="form-control" [(ngModel)]="pin" name="pin" placeholder="Enter 4-digit PIN" maxlength="6" />
-                <span class="text-muted fs-7">Transfers $5,000+ require step-up verification.</span>
-              </div>
+          <button type="submit" class="btn btn-modern-primary w-100 py-3 mt-2" [disabled]="isLoading()">
+            @if (isLoading()) {
+              <span class="spinner-border spinner-border-sm me-2"></span> Processing ACID Session...
+            } @else {
+              Send Money Now
             }
-
-            <button type="submit" class="btn btn-primary w-100 fw-bold py-2" [disabled]="isLoading()">
-              @if (isLoading()) {
-                <span class="spinner-border spinner-border-sm me-2"></span> Processing...
-              } @else {
-                Execute Instant Transfer
-              }
-            </button>
-          </form>
-        </div>
+          </button>
+        </form>
       </div>
     </div>
 
     <!-- Transaction History Table -->
     <div class="col-lg-7">
-      <div class="card shadow-sm border-0 h-100">
-        <div class="card-header bg-white py-3">
-          <h5 class="mb-0 fw-bold">📋 Transaction History</h5>
-        </div>
-        <div class="card-body p-0">
-          <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-              <thead class="table-light fs-7">
+      <div class="card card-glass p-4 h-100">
+        <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+          <span>📋</span> Recent Activity
+        </h5>
+
+        <div class="table-responsive">
+          <table class="table table-dark-custom align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Reference ID</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (tx of transactions(); track tx._id) {
                 <tr>
-                  <th>Reference</th>
-                  <th>Type</th>
-                  <th>Amount</th>
-                  <th>Date</th>
+                  <td><code class="text-info">{{ tx.referenceId }}</code></td>
+                  <td>
+                    @if (tx.senderAccountId?.accountNumber === currentUser()?.accountNumber) {
+                      <span class="badge-outgoing">OUTGOING</span>
+                    } @else {
+                      <span class="badge-incoming">INCOMING</span>
+                    }
+                  </td>
+                  <td [class.text-danger]="tx.senderAccountId?.accountNumber === currentUser()?.accountNumber"
+                      [class.text-success]="tx.senderAccountId?.accountNumber !== currentUser()?.accountNumber"
+                      class="fw-bold">
+                    {{ tx.senderAccountId?.accountNumber === currentUser()?.accountNumber ? '-' : '+' }}${{ tx.amount | number:'1.2-2' }}
+                  </td>
+                  <td class="small text-secondary">{{ tx.createdAt | date:'short' }}</td>
                 </tr>
-              </thead>
-              <tbody>
-                @for (tx of transactions(); track tx._id) {
-                  <tr>
-                    <td><code class="small">{{ tx.referenceId }}</code></td>
-                    <td>
-                      @if (tx.senderAccountId?.accountNumber === currentUser()?.accountNumber) {
-                        <span class="badge bg-danger-subtle text-danger">OUTGOING</span>
-                      } @else {
-                        <span class="badge bg-success-subtle text-success">INCOMING</span>
-                      }
-                    </td>
-                    <td [class.text-danger]="tx.senderAccountId?.accountNumber === currentUser()?.accountNumber"
-                        [class.text-success]="tx.senderAccountId?.accountNumber !== currentUser()?.accountNumber"
-                        class="fw-bold">
-                      {{ tx.senderAccountId?.accountNumber === currentUser()?.accountNumber ? '-' : '+' }}${{ tx.amount | number:'1.2-2' }}
-                    </td>
-                    <td class="small text-muted">{{ tx.createdAt | date:'short' }}</td>
-                  </tr>
-                } @empty {
-                  <tr>
-                    <td colspan="4" class="text-center py-4 text-muted">No transactions found.</td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
+              } @empty {
+                <tr>
+                  <td colspan="4" class="text-center py-4 text-secondary">No transaction activity recorded yet.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
