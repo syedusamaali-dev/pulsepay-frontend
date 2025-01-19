@@ -1,37 +1,57 @@
-<div class="container d-flex align-items-center justify-content-center min-vh-100">
-  <div class="card shadow-lg border-0 p-4" style="max-width: 420px; width: 100%;">
-    <div class="text-center mb-4">
-      <h2 class="fw-bold text-primary">⚡ PulsePay</h2>
-      <p class="text-muted small">Sign in to access your real-time financial portal</p>
+<div class="auth-card">
+  <!-- Brand Header -->
+  <div class="text-center mb-4">
+    <div class="brand-badge mb-3">⚡</div>
+    <h3 class="fw-bold text-white mb-1">Welcome Back</h3>
+    <p class="text-secondary small">Access your PulsePay account</p>
+  </div>
+
+  <!-- Alert Messages -->
+  @if (errorMessage()) {
+    <div class="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-20 text-danger small rounded-3 mb-3">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <!-- Form -->
+  <form (ngSubmit)="onLogin()">
+    <div class="mb-3">
+      <label class="form-label small text-secondary fw-semibold">Email Address</label>
+      <input 
+        type="email" 
+        class="form-control form-control-dark" 
+        [(ngModel)]="email" 
+        name="email" 
+        placeholder="name@example.com" 
+        required 
+      />
     </div>
 
-    @if (errorMessage()) {
-      <div class="alert alert-danger py-2 small">{{ errorMessage() }}</div>
-    }
-
-    <form (ngSubmit)="onLogin()">
-      <div class="mb-3">
-        <label class="form-label small fw-semibold">Email Address</label>
-        <input type="email" class="form-control" [(ngModel)]="email" name="email" placeholder="usama@example.com" required />
+    <div class="mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <label class="form-label small text-secondary fw-semibold mb-0">Password</label>
       </div>
+      <input 
+        type="password" 
+        class="form-control form-control-dark" 
+        [(ngModel)]="password" 
+        name="password" 
+        placeholder="••••••••" 
+        required 
+      />
+    </div>
 
-      <div class="mb-3">
-        <label class="form-label small fw-semibold">Password</label>
-        <input type="password" class="form-control" [(ngModel)]="password" name="password" placeholder="••••••••" required />
-      </div>
+    <button type="submit" class="btn btn-modern-primary w-100 mb-3" [disabled]="isLoading()">
+      @if (isLoading()) {
+        <span class="spinner-border spinner-border-sm me-2"></span> Authenticating...
+      } @else {
+        Sign In
+      }
+    </button>
 
-      <button type="submit" class="btn btn-primary w-100 fw-bold py-2 mb-3" [disabled]="isLoading()">
-        @if (isLoading()) {
-          <span class="spinner-border spinner-border-sm me-2"></span> Authenticating...
-        } @else {
-          Sign In
-        }
-      </button>
-
-      <div class="text-center">
-        <span class="small text-muted">Don't have an account? </span>
-        <a routerLink="/register" class="small fw-bold text-decoration-none text-primary">Register Here</a>
-      </div>
-    </form>
-  </div>
+    <div class="text-center small text-secondary">
+      Don't have an account? 
+      <a routerLink="/register" class="auth-link">Create one</a>
+    </div>
+  </form>
 </div>
