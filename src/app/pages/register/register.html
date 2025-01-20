@@ -1,53 +1,93 @@
-<div class="container d-flex align-items-center justify-content-center min-vh-100 py-5">
-  <div class="card shadow-lg border-0 p-4" style="max-width: 480px; width: 100%;">
-    <div class="text-center mb-4">
-      <h2 class="fw-bold text-primary">⚡ PulsePay</h2>
-      <p class="text-muted small">Create an account to start instant ACID transfers</p>
+<div class="auth-card-wide">
+  <!-- Brand Header -->
+  <div class="text-center mb-4">
+    <div class="brand-badge mb-3">⚡</div>
+    <h3 class="fw-bold text-white mb-1">Create Account</h3>
+    <p class="text-secondary small">Set up your PulsePay digital wallet</p>
+  </div>
+
+  <!-- Alert Messages -->
+  @if (errorMessage()) {
+    <div class="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-20 text-danger small rounded-3 mb-3">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <!-- Form -->
+  <form (ngSubmit)="onRegister()">
+    <div class="mb-3">
+      <label class="form-label small text-secondary fw-semibold">Full Name</label>
+      <input 
+        type="text" 
+        class="form-control form-control-dark" 
+        [(ngModel)]="fullName" 
+        name="fullName" 
+        placeholder="Alex Morgan" 
+        required 
+      />
     </div>
 
-    @if (errorMessage()) {
-      <div class="alert alert-danger py-2 small">{{ errorMessage() }}</div>
-    }
+    <div class="mb-3">
+      <label class="form-label small text-secondary fw-semibold">Email Address</label>
+      <input 
+        type="email" 
+        class="form-control form-control-dark" 
+        [(ngModel)]="email" 
+        name="email" 
+        placeholder="alex@example.com" 
+        required 
+      />
+    </div>
 
-    <form (ngSubmit)="onRegister()">
-      <div class="mb-3">
-        <label class="form-label small fw-semibold">Full Name</label>
-        <input type="text" class="form-control" [(ngModel)]="fullName" name="fullName" placeholder="Usama Ali" required />
+    <div class="row g-3 mb-3">
+      <div class="col-md-6">
+        <label class="form-label small text-secondary fw-semibold">Password</label>
+        <input 
+          type="password" 
+          class="form-control form-control-dark" 
+          [(ngModel)]="password" 
+          name="password" 
+          placeholder="••••••••" 
+          required 
+        />
       </div>
-
-      <div class="mb-3">
-        <label class="form-label small fw-semibold">Email Address</label>
-        <input type="email" class="form-control" [(ngModel)]="email" name="email" placeholder="usama@example.com" required />
+      <div class="col-md-6">
+        <label class="form-label small text-secondary fw-semibold">Security PIN (4 digits)</label>
+        <input 
+          type="password" 
+          class="form-control form-control-dark" 
+          [(ngModel)]="pin" 
+          name="pin" 
+          placeholder="1234" 
+          maxlength="4" 
+          required 
+        />
       </div>
+    </div>
 
-      <div class="row g-2 mb-3">
-        <div class="col-md-6">
-          <label class="form-label small fw-semibold">Password</label>
-          <input type="password" class="form-control" [(ngModel)]="password" name="password" placeholder="••••••••" required />
-        </div>
-        <div class="col-md-6">
-          <label class="form-label small fw-semibold">4-Digit 2FA PIN</label>
-          <input type="password" class="form-control" [(ngModel)]="pin" name="pin" placeholder="1234" maxlength="6" required />
-        </div>
-      </div>
+    <div class="mb-4">
+      <label class="form-label small text-secondary fw-semibold">Initial Deposit Amount ($)</label>
+      <input 
+        type="number" 
+        class="form-control form-control-dark" 
+        [(ngModel)]="initialDeposit" 
+        name="initialDeposit" 
+        placeholder="1000" 
+      />
+      <div class="text-secondary fs-7 mt-1">Free starting balance credited immediately upon setup.</div>
+    </div>
 
-      <div class="mb-3">
-        <label class="form-label small fw-semibold">Initial Starting Deposit ($)</label>
-        <input type="number" class="form-control" [(ngModel)]="initialDeposit" name="initialDeposit" placeholder="1000" />
-      </div>
+    <button type="submit" class="btn btn-modern-primary w-100 mb-3" [disabled]="isLoading()">
+      @if (isLoading()) {
+        <span class="spinner-border spinner-border-sm me-2"></span> Provisioning Account...
+      } @else {
+        Create PulsePay Account
+      }
+    </button>
 
-      <button type="submit" class="btn btn-primary w-100 fw-bold py-2 mb-3" [disabled]="isLoading()">
-        @if (isLoading()) {
-          <span class="spinner-border spinner-border-sm me-2"></span> Creating Account...
-        } @else {
-          Complete Registration
-        }
-      </button>
-
-      <div class="text-center">
-        <span class="small text-muted">Already have an account? </span>
-        <a routerLink="/login" class="small fw-bold text-decoration-none text-primary">Sign In</a>
-      </div>
-    </form>
-  </div>
+    <div class="text-center small text-secondary">
+      Already have an account? 
+      <a routerLink="/login" class="auth-link">Sign in</a>
+    </div>
+  </form>
 </div>
