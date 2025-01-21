@@ -16,7 +16,7 @@ export class RegisterComponent {
   email = '';
   password = '';
   pin = '';
-  initialDeposit = 1000;
+  initialDeposit: number | string = 1000; // Can hold user input string before cast
 
   isLoading = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
@@ -35,12 +35,13 @@ export class RegisterComponent {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
+    // Cast initialDeposit to ensure it's a number
     const payload = {
       fullName: this.fullName,
       email: this.email,
       password: this.password,
       pin: this.pin,
-      initialDeposit: this.initialDeposit
+      initialDeposit: Number(this.initialDeposit) || 1000
     };
 
     this.authService.register(payload).subscribe({
