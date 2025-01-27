@@ -17,7 +17,7 @@ A scalable, high-performance digital banking portal featuring real-time WebSocke
 
 ---
 
-### ⭐ Enterprise FinTech Portfolio Project
+### ⭐ Enterprise FinTech Project
 
 </div>
 
