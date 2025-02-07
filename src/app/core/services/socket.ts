@@ -20,19 +20,30 @@ export class SocketService {
   private paymentReceivedSubject = new Subject<PaymentNotification>();
 
   connect(userId: string): void {
-    if (this.socket && this.socket.connected) return;
+    if (this.socket && this.socket.connected) {
+      // If already connected, make sure room is joined
+      this.socket.emit('join_user_room', userId);
+      return;
+    }
 
     this.socket = io(environment.socketUrl, {
-      transports: ['websocket'],
+      transports: ['polling', 'websocket'], // Polling fallback ensures Back4App proxy passes traffic smoothly
+      withCredentials: true,
+      autoConnect: true,
     });
 
     this.socket.on('connect', () => {
-      // Join targeted user socket room for real-time payments
+      console.log('⚡ Connected to Socket server:', this.socket.id);
+      // Re-join user room on fresh connect or auto-reconnect
       this.socket.emit('join_user_room', userId);
     });
 
     this.socket.on('payment_received', (data: PaymentNotification) => {
       this.paymentReceivedSubject.next(data);
+    });
+
+    this.socket.on('connect_error', (error) => {
+      console.error('❌ Socket Connection Error:', error);
     });
   }
 
