@@ -18,38 +18,56 @@ export interface PaymentNotification {
 export class SocketService {
   private socket!: Socket;
   private paymentReceivedSubject = new Subject<PaymentNotification>();
+  private activeUserId: string | null = null; // Store user ID for auto-reconnects
 
   connect(userId: string): void {
+    this.activeUserId = userId;
+
     if (this.socket && this.socket.connected) {
-      // If already connected, make sure room is joined
+      // Re-join user room if socket is already active
       this.socket.emit('join_user_room', userId);
       return;
     }
 
+    // Attach auth token if available in local storage
+    const token = localStorage.getItem('token') || '';
+
     this.socket = io(environment.socketUrl, {
-      transports: ['polling', 'websocket'], // Polling fallback ensures Back4App proxy passes traffic smoothly
+      transports: ['websocket', 'polling'], // Prioritize websocket for Back4App
       withCredentials: true,
       autoConnect: true,
+      auth: {
+        token: token
+      }
     });
 
     this.socket.on('connect', () => {
-      console.log('⚡ Connected to Socket server:', this.socket.id);
-      // Re-join user room on fresh connect or auto-reconnect
-      this.socket.emit('join_user_room', userId);
+      console.log('⚡ PulsePay Socket Connected:', this.socket.id);
+      
+      // Auto join room using stored activeUserId
+      if (this.activeUserId) {
+        this.socket.emit('join_user_room', this.activeUserId);
+      }
     });
 
     this.socket.on('payment_received', (data: PaymentNotification) => {
+      console.log('💵 PulsePay Payment Received:', data);
       this.paymentReceivedSubject.next(data);
     });
 
     this.socket.on('connect_error', (error) => {
-      console.error('❌ Socket Connection Error:', error);
+      console.error('❌ PulsePay Socket Connection Error:', error);
+    });
+
+    this.socket.on('disconnect', (reason) => {
+      console.warn('⚠️ PulsePay Socket Disconnected:', reason);
     });
   }
 
   disconnect(): void {
     if (this.socket) {
       this.socket.disconnect();
+      this.activeUserId = null;
     }
   }
 
