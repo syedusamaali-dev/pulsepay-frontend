@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://pulsepay-5hp9d55r.b4a.run/api/:path*"
+      "destination": "https://pulsepay-t56dy4kb.b4a.run/api/:path*"
     },
     {
       "source": "/socket.io/:path*",
-      "destination": "https://pulsepay-5hp9d55r.b4a.run/socket.io/:path*"
+      "destination": "https://pulsepay-t56dy4kb.b4a.run/socket.io/:path*"
     }
   ]
 }
