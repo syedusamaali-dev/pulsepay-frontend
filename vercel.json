@@ -7,6 +7,10 @@
     {
       "source": "/socket.io/:path*",
       "destination": "https://pulsepay-t56dy4kb.b4a.run/socket.io/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
