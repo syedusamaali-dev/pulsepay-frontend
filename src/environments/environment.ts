@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
   apiUrl: '/api',
-  socketUrl: 'https://pulsepay-t56dy4kb.b4a.run',
+  socketUrl: 'https://pulsepay-ztnw2uu3.b4a.run',
 };
