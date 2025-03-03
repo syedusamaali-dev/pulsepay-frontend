@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: '/api',
-  socketUrl: 'https://pulsepay-ztnw2uu3.b4a.run',
+  apiUrl: 'https://pulsepay-backend-dtu89cchc-usama220s-projects.vercel.app/api',
+  socketUrl: 'https://pulsepay-backend-dtu89cchc-usama220s-projects.vercel.app'
 };
