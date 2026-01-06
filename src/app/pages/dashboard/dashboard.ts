@@ -11,19 +11,19 @@ import { SocketService, PaymentNotification } from '../../core/services/socket';
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  templateUrl: './dashboard.html',
+  styleUrls: ['./dashboard.scss'],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   currentUser!: Signal<User | null>; // or Signal/WritableSignal type
   transactions = signal<any[]>([]);
-  
+
   // Transfer Form State
   recipientAccountNumber = '';
   amount: number | null = null;
   description = '';
   pin = '';
-  
+
   // UI Control Signals
   isLoading = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
@@ -37,10 +37,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private transferService: TransferService,
     private socketService: SocketService,
-    private router: Router
+    private router: Router,
   ) {
- this.currentUser = this.authService.currentUser;
-
+    this.currentUser = this.authService.currentUser;
   }
 
   ngOnInit(): void {
@@ -48,13 +47,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (user) {
       // Connect to real-time WebSockets
       this.socketService.connect(user.id);
-      
+
       // Listen for incoming payments
       this.socketSub = this.socketService.onPaymentReceived().subscribe((notification) => {
         this.liveToast.set(notification);
         this.authService.updateBalance(notification.newBalance);
         this.loadTransactionHistory();
-        
+
         // Auto-dismiss toast after 6 seconds
         setTimeout(() => this.liveToast.set(null), 6000);
       });
@@ -75,7 +74,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.transactions.set(res.data);
         }
       },
-      error: (err) => console.error('Failed to load transaction history', err)
+      error: (err) => console.error('Failed to load transaction history', err),
     });
   }
 
@@ -108,14 +107,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
       recipientAccountNumber: this.recipientAccountNumber,
       amount: this.amount,
       description: this.description,
-      ...(this.pin && { pin: this.pin })
+      ...(this.pin && { pin: this.pin }),
     };
 
     this.transferService.executeTransfer(payload).subscribe({
       next: (res) => {
         this.isLoading.set(false);
         if (res.success) {
-          this.successMessage.set(`Successfully sent $${res.data.amount}! Ref: ${res.data.referenceId}`);
+          this.successMessage.set(
+            `Successfully sent $${res.data.amount}! Ref: ${res.data.referenceId}`,
+          );
           this.authService.updateBalance(res.data.newBalance);
           this.resetForm();
           this.loadTransactionHistory();
@@ -128,7 +129,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.showPinField.set(true);
         }
         this.errorMessage.set(errObj?.error || 'Transfer failed. Please check your inputs.');
-      }
+      },
     });
   }
 
